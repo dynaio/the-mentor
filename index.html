@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2c3e50">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="The Mentor - Advanced 3D Brain MRI Visualization and AI-Powered Anomaly Detection">
+    <meta name="theme-color" content="#1E88E5">
+    <title>The Mentor | AI Brain MRI Analysis</title>
+    
+    <!-- Fonts -->
+    <!-- <link rel="preconnect" href="https://fonts.googleapis.com"> -->
+    <!-- <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> -->
+    <!-- <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"> -->
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/themes.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components/sidebar.css">
+    <link rel="stylesheet" href="css/components/viewer.css">
+    <link rel="stylesheet" href="css/components/results.css">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="assets/icons/icon.svg">
+    <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+</head>
+<body class="theme-dark">
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loader-container">
+            <div class="brain-loader">
+                <div class="brain-pulse"></div>
+                <i class="fas fa-brain"></i>
+            </div>
+            <h2>The Mentor</h2>
+            <p id="loading-status">Initializing AI Systems...</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="loading-progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="app" class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <div class="logo">
+                    <i class="fas fa-brain"></i>
+                    <span>The Mentor</span>
+                </div>
+                <span class="version-badge">v2.0</span>
+            </div>
+            <div class="header-center">
+                <div class="patient-info" id="patient-info">
+                    <span class="patient-label">No scan loaded</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="header-btn" id="fullscreen-btn" title="Fullscreen">
+                    <i class="fas fa-expand"></i>
+                </button>
+                <button class="header-btn" id="theme-toggle" title="Toggle Theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button class="header-btn" id="settings-btn" title="Settings">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <button class="header-btn help-btn" id="help-btn" title="Help">
+                    <i class="fas fa-question-circle"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Sidebar Panel -->
+            <aside class="sidebar" id="sidebar">
+                <div class="sidebar-content">
+                    <!-- File Management Section -->
+                    <section class="sidebar-section">
+                        <div class="section-header">
+                            <i class="fas fa-folder-open"></i>
+                            <h3>File Management</h3>
+                        </div>
+                        <div class="section-body">
+                            <div class="drop-zone" id="drop-zone">
+                                <div class="drop-zone-content">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Drag & Drop NIfTI File</p>
+                                    <span>or</span>
+                                    <button class="btn btn-primary" id="open-file-btn">
+                                        <i class="fas fa-file-medical"></i>
+                                        Browse Files
+                                    </button>
+                                </div>
+                                <input type="file" id="file-input" accept=".nii,.nii.gz,.nifti" hidden>
+                            </div>
+                            <div class="file-info" id="file-info" style="display: none;">
+                                <div class="file-info-header">
+                                    <i class="fas fa-file-medical-alt"></i>
+                                    <span id="file-name">scan.nii.gz</span>
+                                </div>
+                                <div class="file-details">
+                                    <div class="detail-row">
+                                        <span>Size:</span>
+                                        <span id="file-size">--</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span>Dimensions:</span>
+                                        <span id="file-dimensions">--</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span>Voxel Size:</span>
+                                        <span id="voxel-size">--</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="recent-files" id="recent-files">
+                                <h4><i class="fas fa-history"></i> Recent Files</h4>
+                                <ul id="recent-files-list">
+                                    <li class="empty-state">No recent files</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 3D View Controls -->
+                    <section class="sidebar-section">
+                        <div class="section-header collapsible" data-target="view-controls">
+                            <i class="fas fa-cube"></i>
+                            <h3>3D View Controls</h3>
+                            <i class="fas fa-chevron-down toggle-icon"></i>
+                        </div>
+                        <div class="section-body" id="view-controls">
+                            <div class="control-group">
+                                <label>Preset Views</label>
+                                <div class="preset-buttons">
+                                    <button class="preset-btn" data-view="axial" title="Axial View">
+                                        <i class="fas fa-arrows-alt-h"></i>
+                                        <span>Axial</span>
+                                    </button>
+                                    <button class="preset-btn" data-view="coronal" title="Coronal View">
+                                        <i class="fas fa-arrows-alt-v"></i>
+                                        <span>Coronal</span>
+                                    </button>
+                                    <button class="preset-btn" data-view="sagittal" title="Sagittal View">
+                                        <i class="fas fa-exchange-alt"></i>
+                                        <span>Sagittal</span>
+                                    </button>
+                                    <button class="preset-btn" data-view="3d" title="3D View">
+                                        <i class="fas fa-cube"></i>
+                                        <span>3D</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label>Zoom</label>
+                                <div class="zoom-controls">
+                                    <button class="control-btn" id="zoom-out" title="Zoom Out">
+                                        <i class="fas fa-search-minus"></i>
+                                    </button>
+                                    <input type="range" id="zoom-slider" min="0.5" max="3" step="0.1" value="1">
+                                    <button class="control-btn" id="zoom-in" title="Zoom In">
+                                        <i class="fas fa-search-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <button class="btn btn-secondary full-width" id="reset-view">
+                                    <i class="fas fa-sync-alt"></i>
+                                    Reset View
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Slice Controls -->
+                    <section class="sidebar-section">
+                        <div class="section-header collapsible" data-target="slice-controls">
+                            <i class="fas fa-layer-group"></i>
+                            <h3>Slice Controls</h3>
+                            <i class="fas fa-chevron-down toggle-icon"></i>
+                        </div>
+                        <div class="section-body" id="slice-controls">
+                            <div class="slice-control">
+                                <div class="slice-header">
+                                    <label>Axial (Z)</label>
+                                    <span class="slice-value" id="axial-value">0</span>
+                                </div>
+                                <input type="range" id="axial-slider" min="0" max="100" value="50" class="slice-slider axial">
+                            </div>
+                            <div class="slice-control">
+                                <div class="slice-header">
+                                    <label>Coronal (Y)</label>
+                                    <span class="slice-value" id="coronal-value">0</span>
+                                </div>
+                                <input type="range" id="coronal-slider" min="0" max="100" value="50" class="slice-slider coronal">
+                            </div>
+                            <div class="slice-control">
+                                <div class="slice-header">
+                                    <label>Sagittal (X)</label>
+                                    <span class="slice-value" id="sagittal-value">0</span>
+                                </div>
+                                <input type="range" id="sagittal-slider" min="0" max="100" value="50" class="slice-slider sagittal">
+                            </div>
+                            <div class="toggle-group">
+                                <label class="toggle-label">
+                                    <input type="checkbox" id="crosshair-toggle" checked>
+                                    <span class="toggle-switch"></span>
+                                    <span>Show Crosshairs</span>
+                                </label>
+                                <label class="toggle-label">
+                                    <input type="checkbox" id="sync-slices" checked>
+                                    <span class="toggle-switch"></span>
+                                    <span>Sync Slices</span>
+                                </label>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Visualization Settings -->
+                    <section class="sidebar-section">
+                        <div class="section-header collapsible" data-target="viz-settings">
+                            <i class="fas fa-palette"></i>
+                            <h3>Visualization</h3>
+                            <i class="fas fa-chevron-down toggle-icon"></i>
+                        </div>
+                        <div class="section-body" id="viz-settings">
+                            <div class="control-group">
+                                <label>Window/Level</label>
+                                <div class="dual-slider">
+                                    <div class="slider-row">
+                                        <span>Window</span>
+                                        <input type="range" id="window-slider" min="1" max="4096" value="2048">
+                                        <span class="slider-value" id="window-value">2048</span>
+                                    </div>
+                                    <div class="slider-row">
+                                        <span>Level</span>
+                                        <input type="range" id="level-slider" min="-1024" max="3072" value="1024">
+                                        <span class="slider-value" id="level-value">1024</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label>Opacity</label>
+                                <input type="range" id="opacity-slider" min="0" max="1" step="0.05" value="1">
+                            </div>
+                            <div class="control-group">
+                                <label>Color Scheme</label>
+                                <select id="color-scheme" class="select-input">
+                                    <option value="grayscale">Grayscale</option>
+                                    <option value="spectrum">Spectrum</option>
+                                    <option value="hot">Hot</option>
+                                    <option value="cool">Cool</option>
+                                    <option value="viridis">Viridis</option>
+                                    <option value="bone">Bone</option>
+                                </select>
+                            </div>
+                            <div class="toggle-group">
+                                <label class="toggle-label">
+                                    <input type="checkbox" id="anomaly-highlight" checked>
+                                    <span class="toggle-switch"></span>
+                                    <span>Highlight Anomalies</span>
+                                </label>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- AI Analysis Panel -->
+                    <section class="sidebar-section ai-section">
+                        <div class="section-header">
+                            <i class="fas fa-robot"></i>
+                            <h3>AI Analysis</h3>
+                        </div>
+                        <div class="section-body">
+                            <div class="model-status" id="model-status">
+                                <div class="status-indicator loading"></div>
+                                <span>Loading AI Model...</span>
+                            </div>
+                            <div class="control-group">
+                                <label>Model</label>
+                                <select id="model-select" class="select-input">
+                                    <option value="mantis">MANTIS Anomaly Detector</option>
+                                    <option value="custom">Custom Model</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label>Confidence Threshold</label>
+                                <div class="threshold-control">
+                                    <input type="range" id="confidence-threshold" min="0.5" max="0.99" step="0.01" value="0.75">
+                                    <span class="threshold-value" id="threshold-value">75%</span>
+                                </div>
+                            </div>
+                            <button class="btn btn-accent full-width" id="analyze-btn" disabled>
+                                <i class="fas fa-microscope"></i>
+                                <span>Analyze Brain Scan</span>
+                            </button>
+                            <div class="analysis-progress" id="analysis-progress" style="display: none;">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="analysis-progress-fill"></div>
+                                </div>
+                                <span id="analysis-status">Processing...</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Tools Section -->
+                    <section class="sidebar-section">
+                        <div class="section-header collapsible" data-target="tools-section">
+                            <i class="fas fa-tools"></i>
+                            <h3>Measurement Tools</h3>
+                            <i class="fas fa-chevron-down toggle-icon"></i>
+                        </div>
+                        <div class="section-body" id="tools-section">
+                            <div class="tool-buttons">
+                                <button class="tool-btn" id="tool-distance" title="Measure Distance">
+                                    <i class="fas fa-ruler"></i>
+                                    <span>Distance</span>
+                                </button>
+                                <button class="tool-btn" id="tool-area" title="Measure Area">
+                                    <i class="fas fa-draw-polygon"></i>
+                                    <span>Area</span>
+                                </button>
+                                <button class="tool-btn" id="tool-annotate" title="Add Annotation">
+                                    <i class="fas fa-comment-medical"></i>
+                                    <span>Annotate</span>
+                                </button>
+                                <button class="tool-btn" id="tool-screenshot" title="Take Screenshot">
+                                    <i class="fas fa-camera"></i>
+                                    <span>Capture</span>
+                                </button>
+                            </div>
+                            <div class="measurements-list" id="measurements-list">
+                                <h4>Measurements</h4>
+                                <ul id="measurement-items">
+                                    <li class="empty-state">No measurements</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Sidebar Toggle -->
+                <button class="sidebar-toggle" id="sidebar-toggle">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            </aside>
+
+            <!-- 3D Viewer Container -->
+            <div class="viewer-container" id="viewer-container">
+                <!-- View Mode Tabs -->
+                <div class="view-tabs">
+                    <button class="view-tab active" data-mode="quad">
+                        <i class="fas fa-th-large"></i>
+                        <span>Quad View</span>
+                    </button>
+                    <button class="view-tab" data-mode="single">
+                        <i class="fas fa-square"></i>
+                        <span>Single View</span>
+                    </button>
+                    <button class="view-tab" data-mode="compare">
+                        <i class="fas fa-columns"></i>
+                        <span>Compare</span>
+                    </button>
+                </div>
+
+                <!-- Quad View Layout -->
+                <div class="viewer-grid" id="viewer-grid">
+                    <div class="viewer-panel" id="axial-panel">
+                        <div class="panel-header">
+                            <span class="panel-label">Axial</span>
+                            <div class="panel-controls">
+                                <button class="panel-btn" data-action="maximize">
+                                    <i class="fas fa-expand"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="panel-viewport" id="axial-view"></div>
+                        <div class="panel-info">
+                            <span id="axial-slice-info">Slice: --/--</span>
+                        </div>
+                    </div>
+                    <div class="viewer-panel" id="coronal-panel">
+                        <div class="panel-header">
+                            <span class="panel-label">Coronal</span>
+                            <div class="panel-controls">
+                                <button class="panel-btn" data-action="maximize">
+                                    <i class="fas fa-expand"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="panel-viewport" id="coronal-view"></div>
+                        <div class="panel-info">
+                            <span id="coronal-slice-info">Slice: --/--</span>
+                        </div>
+                    </div>
+                    <div class="viewer-panel" id="sagittal-panel">
+                        <div class="panel-header">
+                            <span class="panel-label">Sagittal</span>
+                            <div class="panel-controls">
+                                <button class="panel-btn" data-action="maximize">
+                                    <i class="fas fa-expand"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="panel-viewport" id="sagittal-view"></div>
+                        <div class="panel-info">
+                            <span id="sagittal-slice-info">Slice: --/--</span>
+                        </div>
+                    </div>
+                    <div class="viewer-panel" id="3d-panel">
+                        <div class="panel-header">
+                            <span class="panel-label">3D Volume</span>
+                            <div class="panel-controls">
+                                <button class="panel-btn" data-action="maximize">
+                                    <i class="fas fa-expand"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="panel-viewport" id="volume-view"></div>
+                        <div class="panel-info">
+                            <span id="3d-info">Rotate: Left Click | Zoom: Scroll</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div class="viewer-empty" id="viewer-empty">
+                    <div class="empty-content">
+                        <div class="empty-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h2>Welcome to The Mentor</h2>
+                        <p>AI-Powered Brain MRI Analysis</p>
+                        <div class="empty-features">
+                            <div class="feature">
+                                <i class="fas fa-cube"></i>
+                                <span>3D Visualization</span>
+                            </div>
+                            <div class="feature">
+                                <i class="fas fa-robot"></i>
+                                <span>AI Detection</span>
+                            </div>
+                            <div class="feature">
+                                <i class="fas fa-chart-line"></i>
+                                <span>Analysis Reports</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary btn-large" id="empty-open-btn">
+                            <i class="fas fa-folder-open"></i>
+                            Open NIfTI Scan
+                        </button>
+                        <p class="hint">or drag & drop a .nii/.nii.gz file anywhere</p>
+                    </div>
+                </div>
+
+                <!-- Viewer Toolbar -->
+                <div class="viewer-toolbar" id="viewer-toolbar">
+                    <div class="toolbar-group">
+                        <button class="toolbar-btn" id="tb-pan" title="Pan">
+                            <i class="fas fa-hand-paper"></i>
+                        </button>
+                        <button class="toolbar-btn active" id="tb-rotate" title="Rotate">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                        <button class="toolbar-btn" id="tb-zoom" title="Zoom">
+                            <i class="fas fa-search-plus"></i>
+                        </button>
+                    </div>
+                    <div class="toolbar-separator"></div>
+                    <div class="toolbar-group">
+                        <button class="toolbar-btn" id="tb-crosshair" title="Crosshair">
+                            <i class="fas fa-crosshairs"></i>
+                        </button>
+                        <button class="toolbar-btn" id="tb-ruler" title="Measure">
+                            <i class="fas fa-ruler"></i>
+                        </button>
+                        <button class="toolbar-btn" id="tb-annotate" title="Annotate">
+                            <i class="fas fa-comment-medical"></i>
+                        </button>
+                    </div>
+                    <div class="toolbar-separator"></div>
+                    <div class="toolbar-group">
+                        <button class="toolbar-btn" id="tb-reset" title="Reset View">
+                            <i class="fas fa-undo"></i>
+                        </button>
+                        <button class="toolbar-btn" id="tb-screenshot" title="Screenshot">
+                            <i class="fas fa-camera"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Console -->
+            <aside class="results-panel" id="results-panel">
+                <div class="results-header">
+                    <div class="results-title">
+                        <i class="fas fa-chart-bar"></i>
+                        <h3>Analysis Results</h3>
+                    </div>
+                    <div class="results-actions">
+                        <button class="results-btn" id="export-pdf" title="Export PDF">
+                            <i class="fas fa-file-pdf"></i>
+                        </button>
+                        <button class="results-btn" id="export-json" title="Export JSON">
+                            <i class="fas fa-file-code"></i>
+                        </button>
+                        <button class="results-btn" id="toggle-results" title="Toggle Panel">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="results-content" id="results-content">
+                    <!-- Status Card -->
+                    <div class="result-card status-card" id="status-card">
+                        <div class="status-icon pending">
+                            <i class="fas fa-hourglass-half"></i>
+                        </div>
+                        <div class="status-info">
+                            <h4>Analysis Status</h4>
+                            <span class="status-text">Awaiting scan...</span>
+                        </div>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="quick-stats" id="quick-stats" style="display: none;">
+                        <div class="stat-item">
+                            <div class="stat-value" id="stat-confidence">--</div>
+                            <div class="stat-label">Confidence</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="stat-anomaly">--</div>
+                            <div class="stat-label">Anomaly Score</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="stat-time">--</div>
+                            <div class="stat-label">Process Time</div>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Results -->
+                    <div class="results-section" id="results-details" style="display: none;">
+                        <h4><i class="fas fa-list-ul"></i> Detection Details</h4>
+                        <div class="anomalies-list" id="anomalies-list">
+                            <!-- Anomaly items will be inserted here -->
+                        </div>
+                    </div>
+
+                    <!-- Metrics Charts -->
+                    <div class="results-section" id="metrics-section" style="display: none;">
+                        <h4><i class="fas fa-chart-pie"></i> Analysis Metrics</h4>
+                        <div class="chart-container">
+                            <canvas id="metrics-chart"></canvas>
+                        </div>
+                        <div class="metrics-details" id="metrics-details">
+                            <!-- Metrics will be inserted here -->
+                        </div>
+                    </div>
+
+                    <!-- Recommendations -->
+                    <div class="results-section" id="recommendations-section" style="display: none;">
+                        <h4><i class="fas fa-clipboard-check"></i> Recommendations</h4>
+                        <ul class="recommendations-list" id="recommendations-list">
+                            <!-- Recommendations will be inserted here -->
+                        </ul>
+                    </div>
+
+                    <!-- Console Log -->
+                    <div class="console-section">
+                        <div class="console-header">
+                            <h4><i class="fas fa-terminal"></i> Console</h4>
+                            <button class="console-btn" id="clear-console">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                        <div class="console-output" id="console-output">
+                            <div class="console-line info">
+                                <span class="console-time">[--:--:--]</span>
+                                <span class="console-msg">The Mentor initialized. Ready for analysis.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="footer-left">
+                <span id="memory-usage">Memory: --</span>
+                <span class="separator">|</span>
+                <span id="gpu-status">GPU: Checking...</span>
+            </div>
+            <div class="footer-center">
+                <span id="cursor-position">Position: --</span>
+            </div>
+            <div class="footer-right">
+                <span>© 2024 The Mentor | Medical AI Platform</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal" id="settings-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-cog"></i> Settings</h3>
+                <button class="modal-close" id="close-settings">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-group">
+                    <h4>Appearance</h4>
+                    <div class="setting-item">
+                        <label>Theme</label>
+                        <select id="setting-theme" class="select-input">
+                            <option value="dark">Dark</option>
+                            <option value="light">Light</option>
+                            <option value="auto">System</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label>Viewer Background</label>
+                        <input type="color" id="setting-bg-color" value="#1a1a2e">
+                    </div>
+                </div>
+                <div class="settings-group">
+                    <h4>Performance</h4>
+                    <div class="setting-item">
+                        <label>GPU Acceleration</label>
+                        <label class="toggle-label">
+                            <input type="checkbox" id="setting-gpu" checked>
+                            <span class="toggle-switch"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label>Anti-aliasing</label>
+                        <label class="toggle-label">
+                            <input type="checkbox" id="setting-aa" checked>
+                            <span class="toggle-switch"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="settings-group">
+                    <h4>AI Model</h4>
+                    <div class="setting-item">
+                        <label>Custom Model Path</label>
+                        <input type="text" id="setting-model-path" class="text-input" placeholder="models/custom-model/">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="reset-settings">Reset to Default</button>
+                <button class="btn btn-primary" id="save-settings">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div class="modal" id="help-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3><i class="fas fa-question-circle"></i> Help & Documentation</h3>
+                <button class="modal-close" id="close-help">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="help-tabs">
+                    <button class="help-tab active" data-tab="getting-started">Getting Started</button>
+                    <button class="help-tab" data-tab="keyboard">Keyboard Shortcuts</button>
+                    <button class="help-tab" data-tab="about">About</button>
+                </div>
+                <div class="help-content" id="help-getting-started">
+                    <h4>Quick Start Guide</h4>
+                    <ol>
+                        <li><strong>Load a Scan:</strong> Drag & drop a NIfTI file (.nii or .nii.gz) or click "Browse Files"</li>
+                        <li><strong>Navigate:</strong> Use the 3D viewer to explore the brain scan</li>
+                        <li><strong>Analyze:</strong> Click "Analyze Brain Scan" to run AI detection</li>
+                        <li><strong>Review:</strong> Check results in the right panel</li>
+                        <li><strong>Export:</strong> Save your analysis as PDF or JSON</li>
+                    </ol>
+                </div>
+                <div class="help-content" id="help-keyboard" style="display: none;">
+                    <h4>Keyboard Shortcuts</h4>
+                    <div class="shortcuts-grid">
+                        <div class="shortcut"><kbd>Space</kbd> Play/Pause slice animation</div>
+                        <div class="shortcut"><kbd>R</kbd> Reset view</div>
+                        <div class="shortcut"><kbd>A</kbd> Toggle annotations</div>
+                        <div class="shortcut"><kbd>C</kbd> Toggle crosshairs</div>
+                        <div class="shortcut"><kbd>F</kbd> Fullscreen</div>
+                        <div class="shortcut"><kbd>1-4</kbd> Switch to view panel</div>
+                        <div class="shortcut"><kbd>↑↓</kbd> Navigate slices</div>
+                        <div class="shortcut"><kbd>Ctrl+S</kbd> Screenshot</div>
+                    </div>
+                </div>
+                <div class="help-content" id="help-about" style="display: none;">
+                    <h4>About The Mentor</h4>
+                    <p>The Mentor is an advanced AI-powered medical imaging platform for brain MRI analysis. Using state-of-the-art deep learning models, it can detect anomalies including tumors, Alzheimer's disease markers, and other neurological conditions.</p>
+                    <p><strong>Version:</strong> 2.0.0</p>
+                    <p><strong>Technologies:</strong> TensorFlow.js, AMI.js, Three.js</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('service-worker.js').then(registration => {
+                console.log('ServiceWorker registration successful');
+            }).catch(err => {
+                console.log('ServiceWorker registration failed: ', err);
+            });
+        });
+    }
+    </script>
+    <!-- Toast Notifications Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- External Libraries -->
+    <script src="lib/vendor/three.min.js"></script>
+    <script src="lib/vendor/tf.min.js"></script>
+    <script src="lib/vendor/pako.min.js"></script>
+    <script src="lib/vendor/chart.min.js"></script>
+    <script type="module" src="js/utils/file-handler.js"></script>
+    <script type="module" src="js/utils/nifti-parser.js"></script>
+    <script type="module" src="js/utils/tensor-utils.js"></script>
+    <script type="module" src="js/nifti-viewer.js"></script>
+    <script type="module" src="js/model-loader.js"></script>
+    <script type="module" src="js/brain-analyzer.js"></script>
+    <script type="module" src="js/ui-controller.js"></script>
+    <script type="module" src="js/app.js"></script>
+    
+
+</body>
+</html>
+

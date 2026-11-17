@@ -1,0 +1,319 @@
+/* ============================================
+   THE MENTOR - Theme Variables
+   Professional Medical UI Color System
+   ============================================ */
+
+:root {
+    /* Font Families */
+    --font-primary: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+    
+    /* Font Sizes */
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.125rem;
+    --text-xl: 1.25rem;
+    --text-2xl: 1.5rem;
+    --text-3xl: 2rem;
+    
+    /* Spacing */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.25rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-10: 2.5rem;
+    --space-12: 3rem;
+    
+    /* Border Radius */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-full: 9999px;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
+    
+    /* Transitions */
+    --transition-fast: 150ms ease;
+    --transition-base: 250ms ease;
+    --transition-slow: 350ms ease;
+    
+    /* Layout */
+    --sidebar-width: 350px;
+    --results-width: 400px;
+    --header-height: 60px;
+    --footer-height: 32px;
+    
+    /* Z-Index Scale */
+    --z-base: 1;
+    --z-dropdown: 100;
+    --z-sticky: 200;
+    --z-modal: 500;
+    --z-toast: 600;
+    --z-loading: 1000;
+}
+
+/* ============================================
+   DARK THEME (Default)
+   ============================================ */
+.theme-dark {
+    /* Background Colors */
+    --bg-primary: #0d0d1a;
+    --bg-secondary: #141428;
+    --bg-tertiary: #1a1a35;
+    --bg-elevated: #1f1f40;
+    --bg-hover: #252550;
+    --bg-active: #2d2d60;
+    
+    /* Surface Colors */
+    --surface-primary: #16162d;
+    --surface-secondary: #1c1c3a;
+    --surface-tertiary: #232347;
+    
+    /* Border Colors */
+    --border-primary: #2a2a55;
+    --border-secondary: #353570;
+    --border-focus: #4a6cf7;
+    
+    /* Text Colors */
+    --text-primary: #ffffff;
+    --text-secondary: #b4b4d0;
+    --text-tertiary: #8888aa;
+    --text-muted: #666688;
+    
+    /* Brand Colors */
+    --primary: #4a6cf7;
+    --primary-light: #6b8aff;
+    --primary-dark: #3a56d4;
+    --primary-alpha: rgba(74, 108, 247, 0.15);
+    
+    /* Accent Colors */
+    --accent: #00d4aa;
+    --accent-light: #33e0bf;
+    --accent-dark: #00b894;
+    --accent-alpha: rgba(0, 212, 170, 0.15);
+    
+    /* Semantic Colors */
+    --success: #00d26a;
+    --success-bg: rgba(0, 210, 106, 0.12);
+    --success-border: rgba(0, 210, 106, 0.3);
+    
+    --warning: #ffc107;
+    --warning-bg: rgba(255, 193, 7, 0.12);
+    --warning-border: rgba(255, 193, 7, 0.3);
+    
+    --error: #ff4757;
+    --error-bg: rgba(255, 71, 87, 0.12);
+    --error-border: rgba(255, 71, 87, 0.3);
+    
+    --info: #54a0ff;
+    --info-bg: rgba(84, 160, 255, 0.12);
+    --info-border: rgba(84, 160, 255, 0.3);
+    
+    /* Medical Specific Colors */
+    --normal: #00d26a;
+    --anomaly: #ff4757;
+    --uncertain: #ffc107;
+    
+    /* Viewer Colors */
+    --viewer-bg: #0a0a15;
+    --viewer-grid: #1a1a30;
+    --crosshair: #ff6b6b;
+    
+    /* Chart Colors */
+    --chart-1: #4a6cf7;
+    --chart-2: #00d4aa;
+    --chart-3: #ff6b6b;
+    --chart-4: #ffc107;
+    --chart-5: #a855f7;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, #4a6cf7 0%, #6b8aff 100%);
+    --gradient-accent: linear-gradient(135deg, #00d4aa 0%, #00f5c4 100%);
+    --gradient-dark: linear-gradient(180deg, #141428 0%, #0d0d1a 100%);
+    --gradient-glow: radial-gradient(ellipse at center, rgba(74, 108, 247, 0.15) 0%, transparent 70%);
+    
+    /* Special Effects */
+    --glow-primary: 0 0 20px rgba(74, 108, 247, 0.4);
+    --glow-accent: 0 0 20px rgba(0, 212, 170, 0.4);
+    --glow-success: 0 0 20px rgba(0, 210, 106, 0.4);
+    --glow-error: 0 0 20px rgba(255, 71, 87, 0.4);
+}
+
+/* ============================================
+   LIGHT THEME
+   ============================================ */
+.theme-light {
+    /* Background Colors */
+    --bg-primary: #f8f9fc;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #f0f2f7;
+    --bg-elevated: #ffffff;
+    --bg-hover: #e8ebf2;
+    --bg-active: #dde1eb;
+    
+    /* Surface Colors */
+    --surface-primary: #ffffff;
+    --surface-secondary: #f5f7fa;
+    --surface-tertiary: #edf0f5;
+    
+    /* Border Colors */
+    --border-primary: #e2e5ed;
+    --border-secondary: #d0d5e0;
+    --border-focus: #1e88e5;
+    
+    /* Text Colors */
+    --text-primary: #1a1a2e;
+    --text-secondary: #4a5568;
+    --text-tertiary: #718096;
+    --text-muted: #a0aec0;
+    
+    /* Brand Colors */
+    --primary: #1e88e5;
+    --primary-light: #42a5f5;
+    --primary-dark: #1565c0;
+    --primary-alpha: rgba(30, 136, 229, 0.1);
+    
+    /* Accent Colors */
+    --accent: #00b894;
+    --accent-light: #00d4aa;
+    --accent-dark: #009d7f;
+    --accent-alpha: rgba(0, 184, 148, 0.1);
+    
+    /* Semantic Colors */
+    --success: #00c853;
+    --success-bg: rgba(0, 200, 83, 0.08);
+    --success-border: rgba(0, 200, 83, 0.25);
+    
+    --warning: #ff9800;
+    --warning-bg: rgba(255, 152, 0, 0.08);
+    --warning-border: rgba(255, 152, 0, 0.25);
+    
+    --error: #f44336;
+    --error-bg: rgba(244, 67, 54, 0.08);
+    --error-border: rgba(244, 67, 54, 0.25);
+    
+    --info: #2196f3;
+    --info-bg: rgba(33, 150, 243, 0.08);
+    --info-border: rgba(33, 150, 243, 0.25);
+    
+    /* Medical Specific Colors */
+    --normal: #00c853;
+    --anomaly: #f44336;
+    --uncertain: #ff9800;
+    
+    /* Viewer Colors */
+    --viewer-bg: #1a1a2e;
+    --viewer-grid: #2a2a45;
+    --crosshair: #ff4757;
+    
+    /* Chart Colors */
+    --chart-1: #1e88e5;
+    --chart-2: #00b894;
+    --chart-3: #f44336;
+    --chart-4: #ff9800;
+    --chart-5: #9c27b0;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, #1e88e5 0%, #42a5f5 100%);
+    --gradient-accent: linear-gradient(135deg, #00b894 0%, #00d4aa 100%);
+    --gradient-dark: linear-gradient(180deg, #f8f9fc 0%, #ffffff 100%);
+    --gradient-glow: radial-gradient(ellipse at center, rgba(30, 136, 229, 0.08) 0%, transparent 70%);
+    
+    /* Special Effects */
+    --glow-primary: 0 0 20px rgba(30, 136, 229, 0.25);
+    --glow-accent: 0 0 20px rgba(0, 184, 148, 0.25);
+    --glow-success: 0 0 20px rgba(0, 200, 83, 0.25);
+    --glow-error: 0 0 20px rgba(244, 67, 54, 0.25);
+    
+    /* Shadows for Light Theme */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.12);
+    --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* ============================================
+   SCROLLBAR STYLING
+   ============================================ */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-secondary);
+    border-radius: var(--radius-full);
+    transition: background var(--transition-fast);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
+}
+
+::-webkit-scrollbar-corner {
+    background: var(--bg-secondary);
+}
+
+/* Firefox Scrollbar */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-secondary) var(--bg-secondary);
+}
+
+/* ============================================
+   SELECTION STYLING
+   ============================================ */
+::selection {
+    background: var(--primary-alpha);
+    color: var(--primary-light);
+}
+
+::-moz-selection {
+    background: var(--primary-alpha);
+    color: var(--primary-light);
+}
+
+/* ============================================
+   FOCUS STYLING
+   ============================================ */
+:focus {
+    outline: none;
+}
+
+:focus-visible {
+    outline: 2px solid var(--border-focus);
+    outline-offset: 2px;
+}
+
+/* ============================================
+   THEME TRANSITION
+   ============================================ */
+body {
+    transition: 
+        background-color var(--transition-slow),
+        color var(--transition-slow);
+}
+
+.theme-transitioning * {
+    transition: 
+        background-color var(--transition-slow),
+        border-color var(--transition-slow),
+        color var(--transition-slow),
+        box-shadow var(--transition-slow) !important;
+}
+
+

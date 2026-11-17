@@ -1,0 +1,17 @@
+# Models (do not commit)
+models/
+*.pth
+*.pt
+*.onnx
+*.h5
+
+# Backup / temp
+*.bak
+*.tmp
+*~
+.DS_Store
+__pycache__/
+*.pyc
+.env
+.vscode/
+.idea/
